@@ -19,20 +19,18 @@ public class DispositivoPorUsuario implements Serializable {
     @Column(name = "id_dispositivo_por_usuario", nullable = false)
     private Integer id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "id_dispositivo", nullable = false)
     private Dispositivo dispositivo;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "id_alumno", nullable = false)
     private Usuario alumno;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "id_profesor", nullable = false)
     private Usuario profesor;
 
-    @Size(max = 45)
-    @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "tipo", length = 45)
     private String tipo;
 

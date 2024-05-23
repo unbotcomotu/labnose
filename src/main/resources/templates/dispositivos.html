@@ -4,6 +4,7 @@
 </head>
 <body>
 <div th:replace="navbar.html::navbar('Dispositivos')"></div>
+<h1>Dispositivos</h1>
 <div>
     <a sec:authorize="hasAnyAuthority('Administrador')" class="btn btn-info" href="/vistaAgregarDispositivo">Agregar dispositivo</a>
 </div>

@@ -22,4 +22,11 @@ public interface DispositivoPorUsuarioRepository extends JpaRepository<Dispositi
     @Transactional
     @Query(nativeQuery = true,value = "insert into dispositivo_por_usuario(id_alumno, id_profesor, id_dispositivo, tipo, fecha_inicio, fecha_fin) values(?1,?2,?3,?4,?5,?6)")
     void agregarDispositivoPorUsuario(Integer idAlumno,Integer idProfesor,Integer idDispositivo,String tipo,String fechaInicio,String fechaFin);
+
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true,value = "delete from dispositivo_por_usuario where id_dispositivo_por_usuario")
+    void eliminarDispositivoPorUsuario(Integer idDispositivoPorUsuario);
+
+
 }

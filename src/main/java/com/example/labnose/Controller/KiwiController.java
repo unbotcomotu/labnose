@@ -8,7 +8,6 @@ import com.example.labnose.Repository.DispositivoRepository;
 import com.example.labnose.Repository.UsuarioRepository;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Controller
@@ -47,22 +45,22 @@ public class KiwiController {
         return "dispositivos";
     }
 
-    @GetMapping("/reservas")
-    public String reservas(Model model,HttpSession session){
+    @GetMapping("/prestamos")
+    public String prestamos(Model model,HttpSession session){
         Usuario usuario=(Usuario) session.getAttribute("usuario");
         if(usuario.getRol().getNombre().equals("profesor")){
             model.addAttribute("listaPrestamos",dispositivoPorUsuarioRepository.listaPrestamosProfesor(usuario.getId()));
         }else {
             model.addAttribute("listaPrestamos",dispositivoPorUsuarioRepository.listaPrestamosAlumno(usuario.getId()));
         }
-        return "reservas";
+        return "prestamos";
     }
 
-    @GetMapping("/prestamos")
-    public String prestamos(Model model,HttpSession session){
+    @GetMapping("/reservas")
+    public String reservas(Model model,HttpSession session){
         Usuario usuario=(Usuario) session.getAttribute("usuario");
         model.addAttribute("listaReservas",dispositivoPorUsuarioRepository.listaReservasAlumno(usuario.getId()));
-        return "prestamos";
+        return "reservas";
     }
 
     @GetMapping("/vistaAgregarDispositivo")
@@ -129,11 +127,19 @@ public class KiwiController {
         }
         if(esValido){
             dispositivoPorUsuarioRepository.agregarDispositivoPorUsuario(dispositivoPorUsuario.getAlumno().getId(),dispositivoPorUsuario.getProfesor().getId(),dispositivoPorUsuario.getDispositivo().getId(),"Préstamo",dispositivoPorUsuario.getFechaInicio(),dispositivoPorUsuario.getFechaFin());
-            dispositivoRepository.actualizarDisponibilidad(dispositivo.getId());
+            dispositivoRepository.aumentarDisponibilidad(dispositivo.getId(),-1);
             return "redirect:/prestamos";
         }else {
             return "agregarPrestamo";
         }
+    }
+
+    @GetMapping("/devolverPrestamo")
+    public String devolverPrestamo(@RequestParam("id")Integer id){
+        dispositivoPorUsuarioRepository.eliminarDispositivoPorUsuario(id);
+        Dispositivo dispositivo= dispositivoRepository.dispositivoPorDispositivoPorUsuario(id);
+        dispositivoRepository.aumentarDisponibilidad(dispositivo.getId(),1);
+        return "redirect:/prestamos";
     }
 
     @GetMapping("/vistaAgregarReserva")
@@ -161,7 +167,7 @@ public class KiwiController {
         }
         if(esValido){
             dispositivoPorUsuarioRepository.agregarDispositivoPorUsuario(dispositivoPorUsuario.getAlumno().getId(),null,dispositivoPorUsuario.getDispositivo().getId(),"Reserva",dispositivoPorUsuario.getFechaInicio(),dispositivoPorUsuario.getFechaFin());
-            dispositivoRepository.actualizarDisponibilidad(dispositivo.getId());
+            dispositivoRepository.aumentarDisponibilidad(dispositivo.getId(),-1);
             return "redirect:/dispositivos";
         }else {
             return "agregarPrestamo";

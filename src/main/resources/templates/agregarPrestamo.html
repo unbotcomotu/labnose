@@ -5,7 +5,7 @@
 <body>
 <div th:replace="navbar.html::navbar('Prestamos')"></div>
 <div style="padding: 20px">
-    <form th:object="${dispositivoPorUsuario}" action="/agregarPrestamo" method="post">
+    <form th:object="${dispositivoPorUsuario}" th:action="@{/agregarPrestamo}" method="post">
         <div class="row">
             <label>Alumno: </label>
             <select style="margin-bottom: 10px" class="form-control" th:field="*{alumno.id}">
