@@ -1,10 +1,12 @@
 package com.example.labnose.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 @Setter
@@ -17,20 +19,22 @@ public class Dispositivo {
     private Integer id;
 
     @Size(max = 45)
-    @NotNull
+    @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "nombre", nullable = false, length = 45)
     private String nombre;
 
-    @NotNull
+    @Digits(integer = 10,fraction = 0)
+    @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;
 
-    @NotNull
+    @Digits(integer = 10,fraction = 0)
+    @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "disponibilidad", nullable = false)
     private Integer disponibilidad;
 
-    @NotNull
+    @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "eliminado", nullable = false)
-    private Byte eliminado;
+    private Boolean eliminado;
 
 }

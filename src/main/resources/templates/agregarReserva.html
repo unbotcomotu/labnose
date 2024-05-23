@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="navbar::head('Agregar reserva')">
 </head>
 <body>
-$END$
+<div th:replace="navbar.html::navbar('Reservas')"></div>
+<div style="padding: 20px">
+    <form th:object="${dispositivoPorUsuario}" action="/agregarReserva" method="post">
+        <div class="row">
+            <label>Dispositivo: </label>
+            <select style="margin-bottom: 10px" class="form-control" th:field="*{dispositivo.id}">
+                <option th:each="dispositivoLista:${listaDispositivos}" th:value="${dispositivoLista.id}" th:selected="${dispositivoLista.id==dispositivoPorUsuario.dispositivo.id}" th:text="${dispositivoLista.nombre}"></option>
+            </select>
+            <label>Fecha de inicio: </label>
+            <input style="margin-bottom: 10px" class="form-control" type="date" th:field="*{fechaInicio}">
+            <div class="invalid-feedback row" th:if="${#fields.hasErrors('fechaInicio')}" th:errors="*{fechaInicio}"></div>
+            <label>Fecha de culminación: </label>
+            <input style="margin-bottom: 10px" class="form-control" type="date" th:field="*{fechaFin}">
+            <div class="invalid-feedback row" th:if="${#fields.hasErrors('fechaFin')}" th:errors="*{fechaFin}"></div>
+            <button class="btn btn-success" type="submit">Guardar</button>
+            <div class="invalid-feedback row" th:if="${errorStock!=null}" th:text="${errorStock}"></div>
+            <div class="invalid-feedback row" th:if="${errorFecha!=null}" th:text="${errorFecha}"></div>
+            <a class="btn btn-danger" href="/prestamos">Cancelar</a>
+        </div>
+    </form>
+</div>
 </body>
 </html>

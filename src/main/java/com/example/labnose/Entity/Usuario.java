@@ -16,29 +16,31 @@ public class Usuario {
     @Column(name = "id_usuario", nullable = false)
     private Integer id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "id_rol", nullable = false)
-    private Rol idRol;
+    private Rol rol;
 
     @Size(max = 45)
-    @NotNull
-    @Column(name = "nombre", nullable = false, length = 45)
+    @NotNull(message = "El campo no puede estar vacío")
+    @Column(name = "nombre", nullable = false,length = 45)
     private String nombre;
 
     @Size(max = 45)
-    @NotNull
-    @Column(name = "apellido", nullable = false, length = 45)
+    @NotNull(message = "El campo no puede estar vacío")
+    @Column(name = "apellido", nullable = false,length = 45)
     private String apellido;
 
     @Size(max = 45)
-    @NotNull
-    @Column(name = "correo", nullable = false, length = 45)
+    @NotNull(message = "El campo no puede estar vacío")
+    @Column(name = "correo", nullable = false,length = 45)
     private String correo;
 
     @Size(max = 45)
-    @NotNull
-    @Column(name = "contrasena", nullable = false, length = 45)
+    @NotNull(message = "El campo no puede estar vacío")
+    @Column(name = "contrasena", nullable = false,length = 45)
     private String contrasena;
 
+    @NotNull(message = "El campo no puede estar vacío")
+    @Column(name = "activo", nullable = false)
+    private Boolean activo;
 }

@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="navbar::head('Dispositivos')">
 </head>
 <body>
-$END$
+<div th:replace="navbar.html::navbar('Dispositivos')"></div>
+<div style="padding: 20px">
+   <table>
+       <thead>
+       <tr>
+           <td>ID</td>
+           <td>Nombre</td>
+           <td>Cantidad</td>
+           <td>Disponibles</td>
+           <td>Acciones</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr th:each="dispositivo:${listaDispositivos}">
+           <td th:text="${dispositivo.id}"></td>
+           <td th:text="${dispositivo.nombre}"></td>
+           <td th:text="${dispositivo.cantidad}"></td>
+           <td th:text="${dispositivo.disponibilidad}"></td>
+           <td th:text="${dispositivo.id}"></td>
+       </tr>
+       </tbody>
+   </table>
+</div>
 </body>
 </html>

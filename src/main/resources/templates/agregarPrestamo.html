@@ -1,10 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="navbar::head('Agregar préstamo')">
 </head>
 <body>
-$END$
+<div th:replace="navbar.html::navbar('Prestamos')"></div>
+<div style="padding: 20px">
+    <form th:object="${dispositivoPorUsuario}" action="/agregarPrestamo" method="post">
+        <div class="row">
+            <label>Alumno: </label>
+            <select style="margin-bottom: 10px" class="form-control" th:field="*{alumno.id}">
+                <option th:each="alumnoLista:${listaAlumnos}" th:value="${alumnoLista.id}" th:selected="${alumnoLista.id==dispositivoPorUsuario.alumno.id}" th:text="${alumnoLista.nombre}"></option>
+            </select>
+            <label>Dispositivo: </label>
+            <select style="margin-bottom: 10px" class="form-control" th:field="*{dispositivo.id}">
+                <option th:each="dispositivoLista:${listaDispositivos}" th:value="${dispositivoLista.id}" th:selected="${dispositivoLista.id==dispositivoPorUsuario.dispositivo.id}" th:text="${dispositivoLista.nombre}"></option>
+            </select>
+            <label>Fecha de inicio: </label>
+            <input style="margin-bottom: 10px" class="form-control" type="date" th:field="*{fechaInicio}">
+            <div class="invalid-feedback row" th:if="${#fields.hasErrors('fechaInicio')}" th:errors="*{fechaInicio}"></div>
+            <label>Fecha de culminación: </label>
+            <input style="margin-bottom: 10px" class="form-control" type="date" th:field="*{fechaFin}">
+            <div class="invalid-feedback row" th:if="${#fields.hasErrors('fechaFin')}" th:errors="*{fechaFin}"></div>
+            <button class="btn btn-success" type="submit">Guardar</button>
+            <div class="invalid-feedback row" th:if="${errorStock!=null}" th:text="${errorStock}"></div>
+            <div class="invalid-feedback row" th:if="${errorFecha!=null}" th:text="${errorFecha}"></div>
+            <a class="btn btn-danger" href="/prestamos">Cancelar</a>
+        </div>
+    </form>
+</div>
 </body>
 </html>

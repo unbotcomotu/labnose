@@ -17,7 +17,7 @@ public class Rol {
     private Integer id;
 
     @Size(max = 45)
-    @NotNull
+    @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "nombre", nullable = false, length = 45)
     private String nombre;
 
