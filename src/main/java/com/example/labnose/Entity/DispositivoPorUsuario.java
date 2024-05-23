@@ -7,11 +7,13 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "dispositivo_por_usuario")
-public class DispositivoPorUsuario {
+public class DispositivoPorUsuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_dispositivo_por_usuario", nullable = false)

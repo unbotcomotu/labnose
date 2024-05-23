@@ -8,11 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "dispositivo")
-public class Dispositivo {
+public class Dispositivo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_dispositivo", nullable = false)
@@ -28,12 +30,9 @@ public class Dispositivo {
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;
 
-    @Digits(integer = 10,fraction = 0)
-    @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "disponibilidad", nullable = false)
     private Integer disponibilidad;
 
-    @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "eliminado", nullable = false)
     private Boolean eliminado;
 

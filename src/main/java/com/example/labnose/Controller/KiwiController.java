@@ -36,7 +36,7 @@ public class KiwiController {
         this.usuarioRepository = usuarioRepository;
     }
 
-    @GetMapping({"/","/login"})
+    @GetMapping("/login")
     public String login(){
         return "login";
     }
@@ -88,9 +88,19 @@ public class KiwiController {
         if(bindingResult.hasErrors()){
             return "agregarEditarDispositivo";
         }else {
-            dispositivoRepository.save(dispositivo);
+            if(dispositivo.getId()!=null){
+                dispositivoRepository.editarDispositivo(dispositivo.getId(),dispositivo.getNombre(),dispositivo.getCantidad());
+            }else{
+                dispositivoRepository.agregarDispositivo(dispositivo.getNombre(),dispositivo.getCantidad());
+            }
             return "redirect:/dispositivos";
         }
+    }
+
+    @GetMapping("/eliminarDispositivo")
+    public String eliminarDispositivo(@RequestParam("id")Integer id){
+        dispositivoRepository.eliminarDispositivo(id);
+        return "redirect:/dispositivos";
     }
 
     @GetMapping("/vistaAgregarPrestamo")

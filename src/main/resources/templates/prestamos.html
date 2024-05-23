@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="navbar::head('Dispositivos')">
+</head>
+<body>
+<div th:replace="navbar.html::navbar('Dispositivos')"></div>
+<div>
+    <a sec:authorize="hasAnyAuthority('Administrador')" class="btn btn-info" href="/vistaAgregarDispositivo">Agregar dispositivo</a>
+</div>
+<div style="padding: 20px;width: 100%">
+    <table style="width: 100%;">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>Nombre</td>
+            <td>Cantidad</td>
+            <td>Disponibles</td>
+            <td>Acciones</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="dispositivo:${listaDispositivos}">
+            <td th:text="${dispositivo.id}"></td>
+            <td th:text="${dispositivo.nombre}"></td>
+            <td th:text="${dispositivo.cantidad}"></td>
+            <td th:text="${dispositivo.disponibilidad}"></td>
+            <td sec:authorize="hasAnyAuthority('Administrador')">
+                <div class="row">
+                    <div class="col-6">
+                        <a th:href="@{|/vistaEditarDispositivo?id=${dispositivo.id}|}">Editar dispositivo</a>
+                    </div>
+                    <div class="col-6">
+                        <a th:href="@{|/eliminarDispositivo?id=${dispositivo.id}|}">Eliminar dispositivo</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

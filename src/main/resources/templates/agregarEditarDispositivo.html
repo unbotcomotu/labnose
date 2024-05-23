@@ -5,7 +5,7 @@
 <body>
 <div th:replace="navbar.html::navbar('Dispositivos')"></div>
 <div style="padding: 20px">
-    <form th:object="${dispositivo}" action="/actualizarListaDispositivos" method="post">
+    <form th:object="${dispositivo}" th:action="@{/actualizarListaDispositivos}" method="post">
         <input type="hidden" th:field="*{id}">
         <div class="row">
             <label>Nombre: </label>

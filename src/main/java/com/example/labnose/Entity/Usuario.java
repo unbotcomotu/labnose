@@ -6,11 +6,13 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "usuario")
-public class Usuario {
+public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario", nullable = false)
@@ -35,9 +37,9 @@ public class Usuario {
     @Column(name = "correo", nullable = false,length = 45)
     private String correo;
 
-    @Size(max = 45)
+    @Size(max = 256)
     @NotNull(message = "El campo no puede estar vacío")
-    @Column(name = "contrasena", nullable = false,length = 45)
+    @Column(name = "contrasena", nullable = false,length = 256)
     private String contrasena;
 
     @NotNull(message = "El campo no puede estar vacío")
