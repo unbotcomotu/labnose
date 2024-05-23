@@ -12,8 +12,11 @@ public interface DispositivoRepository extends JpaRepository<Dispositivo, Intege
     @Query(nativeQuery = true,value = "select * from dispositivo where eliminado=0")
     List<Dispositivo> listarDispositivosNoEliminados();
 
-    @Query(nativeQuery = true,value = "select * from dispositivo d inner join dispositivo_por_usuario dpu on d.id_dispositivo=dpu.id_dispositivo where dpu.id_dispositivo_por_usuario=?1")
+    @Query(nativeQuery = true,value = "select d.* from dispositivo d inner join dispositivo_por_usuario dpu on d.id_dispositivo=dpu.id_dispositivo where dpu.id_dispositivo_por_usuario=?1")
     Dispositivo dispositivoPorDispositivoPorUsuario(Integer idDispositivoPorUsuario);
+
+    @Query(nativeQuery = true,value = "select disponibilidad from dispositivo where id_dispositivo=?1")
+    Integer disposnibilidadPorDispositivo(Integer idDispositivo);
 
     @Transactional
     @Modifying

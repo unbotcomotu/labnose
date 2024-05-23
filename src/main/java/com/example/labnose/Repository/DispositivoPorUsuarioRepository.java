@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface DispositivoPorUsuarioRepository extends JpaRepository<DispositivoPorUsuario, Integer> {
-    @Query(nativeQuery = true,value = "select * from dispositivo_por_usuario where id_profesor=?1 and tipo='prestamo'")
+    @Query(nativeQuery = true,value = "select * from dispositivo_por_usuario where id_profesor=?1 and tipo='Préstamo'")
     List<DispositivoPorUsuario> listaPrestamosProfesor(Integer idProfesor);
 
-    @Query(nativeQuery = true,value = "select * from dispositivo_por_usuario where id_alumno=?1 and tipo='prestamo'")
+    @Query(nativeQuery = true,value = "select * from dispositivo_por_usuario where id_alumno=?1 and tipo='Préstamo'")
     List<DispositivoPorUsuario> listaPrestamosAlumno(Integer idAlumno);
 
-    @Query(nativeQuery = true,value = "select * from dispositivo_por_usuario where id_alumno=?1 and tipo='reserva'")
+    @Query(nativeQuery = true,value = "select * from dispositivo_por_usuario where id_alumno=?1 and tipo='Reserva'")
     List<DispositivoPorUsuario> listaReservasAlumno(Integer idAlumno);
 
     @Modifying
@@ -25,7 +25,7 @@ public interface DispositivoPorUsuarioRepository extends JpaRepository<Dispositi
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true,value = "delete from dispositivo_por_usuario where id_dispositivo_por_usuario")
+    @Query(nativeQuery = true,value = "delete from dispositivo_por_usuario where id_dispositivo_por_usuario=?1")
     void eliminarDispositivoPorUsuario(Integer idDispositivoPorUsuario);
 
 

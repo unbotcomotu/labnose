@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
@@ -48,7 +52,7 @@ public class KiwiController {
     @GetMapping("/prestamos")
     public String prestamos(Model model,HttpSession session){
         Usuario usuario=(Usuario) session.getAttribute("usuario");
-        if(usuario.getRol().getNombre().equals("profesor")){
+        if(usuario.getRol().getNombre().equals("Profesor")){
             model.addAttribute("listaPrestamos",dispositivoPorUsuarioRepository.listaPrestamosProfesor(usuario.getId()));
         }else {
             model.addAttribute("listaPrestamos",dispositivoPorUsuarioRepository.listaPrestamosAlumno(usuario.getId()));
@@ -103,41 +107,48 @@ public class KiwiController {
 
     @GetMapping("/vistaAgregarPrestamo")
     public String vistaAgregarPrestamo(Model model,@ModelAttribute("dispositivoPorUsuario") DispositivoPorUsuario dispositivoPorUsuario){
-        model.addAttribute("listaAlumnos",usuarioRepository.findAll());
+        model.addAttribute("listaAlumnos",usuarioRepository.listarAlumnos());
         model.addAttribute("listaDispositivos",dispositivoRepository.listarDispositivosNoEliminados());
         return "agregarPrestamo";
     }
 
     @PostMapping("/agregarPrestamo")
-    public String agregarPrestamo(Model model,@ModelAttribute("dispositivoPorUsuario") @Valid DispositivoPorUsuario dispositivoPorUsuario, BindingResult bindingResult){
+    public String agregarPrestamo(RedirectAttributes attr, HttpSession session, Model model, @ModelAttribute("dispositivoPorUsuario") @Valid DispositivoPorUsuario dispositivoPorUsuario, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("listaAlumnos",usuarioRepository.listarAlumnos());
+            model.addAttribute("listaDispositivos",dispositivoRepository.listarDispositivosNoEliminados());
+            return "agregarPrestamo";
+        }
         Dispositivo dispositivo=dispositivoPorUsuario.getDispositivo();
-        Timestamp fechaInicio= Timestamp.valueOf(dispositivoPorUsuario.getFechaInicio());
-        Timestamp fechaFin= Timestamp.valueOf(dispositivoPorUsuario.getFechaFin());
+        Usuario profesorActual=(Usuario) session.getAttribute("usuario");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        Timestamp fechaInicio= Timestamp.valueOf(LocalDateTime.parse(dispositivoPorUsuario.getFechaInicio(), formatter));
+        Timestamp fechaFin= Timestamp.valueOf(LocalDateTime.parse(dispositivoPorUsuario.getFechaFin(), formatter));
+        Integer disponibilidad=dispositivoRepository.disposnibilidadPorDispositivo(dispositivo.getId());
         Boolean esValido=true;
         if(fechaFin.before(fechaInicio)){
             model.addAttribute("errorFecha","La fecha de inicio no puede ser después de la de culminación");
             esValido=false;
         }
-        if(dispositivo.getDisponibilidad()==0){
+        if(disponibilidad==0){
             model.addAttribute("errorStock","No hay disponibilidad suficiente");
             esValido=false;
         }
-        if(bindingResult.hasErrors()){
-            esValido=false;
-        }
         if(esValido){
-            dispositivoPorUsuarioRepository.agregarDispositivoPorUsuario(dispositivoPorUsuario.getAlumno().getId(),dispositivoPorUsuario.getProfesor().getId(),dispositivoPorUsuario.getDispositivo().getId(),"Préstamo",dispositivoPorUsuario.getFechaInicio(),dispositivoPorUsuario.getFechaFin());
+            dispositivoPorUsuarioRepository.agregarDispositivoPorUsuario(dispositivoPorUsuario.getAlumno().getId(),profesorActual.getId(),dispositivoPorUsuario.getDispositivo().getId(),"Préstamo",fechaInicio.toString(),fechaFin.toString());
             dispositivoRepository.aumentarDisponibilidad(dispositivo.getId(),-1);
             return "redirect:/prestamos";
         }else {
+            model.addAttribute("listaAlumnos",usuarioRepository.listarAlumnos());
+            model.addAttribute("listaDispositivos",dispositivoRepository.listarDispositivosNoEliminados());
             return "agregarPrestamo";
         }
     }
 
     @GetMapping("/devolverPrestamo")
     public String devolverPrestamo(@RequestParam("id")Integer id){
-        dispositivoPorUsuarioRepository.eliminarDispositivoPorUsuario(id);
         Dispositivo dispositivo= dispositivoRepository.dispositivoPorDispositivoPorUsuario(id);
+        dispositivoPorUsuarioRepository.eliminarDispositivoPorUsuario(id);
         dispositivoRepository.aumentarDisponibilidad(dispositivo.getId(),1);
         return "redirect:/prestamos";
     }
@@ -149,28 +160,41 @@ public class KiwiController {
     }
 
     @PostMapping("/agregarReserva")
-    public String agregarReserva(Model model,@ModelAttribute("dispositivoPorUsuario") @Valid DispositivoPorUsuario dispositivoPorUsuario, BindingResult bindingResult){
+    public String agregarReserva(HttpSession session,Model model,@ModelAttribute("dispositivoPorUsuario") @Valid DispositivoPorUsuario dispositivoPorUsuario, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("listaDispositivos",dispositivoRepository.listarDispositivosNoEliminados());
+            return "agregarReserva";
+        }
+        Usuario alumno=(Usuario) session.getAttribute("usuario");
         Dispositivo dispositivo=dispositivoPorUsuario.getDispositivo();
-        Timestamp fechaInicio= Timestamp.valueOf(dispositivoPorUsuario.getFechaInicio());
-        Timestamp fechaFin= Timestamp.valueOf(dispositivoPorUsuario.getFechaFin());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        Timestamp fechaInicio= Timestamp.valueOf(LocalDateTime.parse(dispositivoPorUsuario.getFechaInicio(), formatter));
+        Timestamp fechaFin= Timestamp.valueOf(LocalDateTime.parse(dispositivoPorUsuario.getFechaFin(), formatter));
+        Integer disponibilidad=dispositivoRepository.disposnibilidadPorDispositivo(dispositivo.getId());
         Boolean esValido=true;
         if(fechaFin.before(fechaInicio)){
             model.addAttribute("errorFecha","La fecha de inicio no puede ser después de la de culminación");
             esValido=false;
         }
-        if(dispositivo.getDisponibilidad()==0){
+        if(disponibilidad==0){
             model.addAttribute("errorStock","No hay disponibilidad suficiente");
             esValido=false;
         }
-        if(bindingResult.hasErrors()){
-            esValido=false;
-        }
         if(esValido){
-            dispositivoPorUsuarioRepository.agregarDispositivoPorUsuario(dispositivoPorUsuario.getAlumno().getId(),null,dispositivoPorUsuario.getDispositivo().getId(),"Reserva",dispositivoPorUsuario.getFechaInicio(),dispositivoPorUsuario.getFechaFin());
+            dispositivoPorUsuarioRepository.agregarDispositivoPorUsuario(alumno.getId(),null,dispositivoPorUsuario.getDispositivo().getId(),"Reserva",fechaInicio.toString(),fechaFin.toString());
             dispositivoRepository.aumentarDisponibilidad(dispositivo.getId(),-1);
-            return "redirect:/dispositivos";
+            return "redirect:/reservas";
         }else {
-            return "agregarPrestamo";
+            model.addAttribute("listaDispositivos",dispositivoRepository.listarDispositivosNoEliminados());
+            return "agregarReserva";
         }
+    }
+
+    @GetMapping("/devolverReserva")
+    public String devolverReserva(@RequestParam("id")Integer id){
+        Dispositivo dispositivo= dispositivoRepository.dispositivoPorDispositivoPorUsuario(id);
+        dispositivoPorUsuarioRepository.eliminarDispositivoPorUsuario(id);
+        dispositivoRepository.aumentarDisponibilidad(dispositivo.getId(),1);
+        return "redirect:/reservas";
     }
 }

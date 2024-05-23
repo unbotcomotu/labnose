@@ -76,7 +76,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests()
                 .requestMatchers("/dispositivos").authenticated()
                 .requestMatchers("/actualizarListaDispositivos","/vistaAgregarDispositivo","/vistaEditarDispositivo").hasAnyAuthority("Administrador")
-                .requestMatchers("/reservas").hasAuthority("Alumno")
+                .requestMatchers("/reservas","/vistaAgregarReserva","/agregarReserva","/devolverReserva").hasAuthority("Alumno")
                 .requestMatchers("/vistaAgregarPrestamo","/agregarPrestamo","/devolverPrestamo").hasAnyAuthority("Profesor")
                 .requestMatchers("/prestamos").hasAnyAuthority("Alumno","Profesor")
                 .anyRequest().permitAll();

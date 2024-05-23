@@ -16,14 +16,14 @@
                 <option th:each="dispositivoLista:${listaDispositivos}" th:value="${dispositivoLista.id}" th:selected="${dispositivoLista.id==dispositivoPorUsuario.dispositivo.id}" th:text="${dispositivoLista.nombre}"></option>
             </select>
             <label>Fecha de inicio: </label>
-            <input style="margin-bottom: 10px" class="form-control" type="date" th:field="*{fechaInicio}">
-            <div class="invalid-feedback row" th:if="${#fields.hasErrors('fechaInicio')}" th:errors="*{fechaInicio}"></div>
+            <input th:classappend="${#fields.hasErrors('fechaInicio')?'is-invalid':''}" style="margin-bottom: 10px" class="form-control" type="datetime-local" th:field="*{fechaInicio}">
+            <label class="invalid-feedback" th:if="${#fields.hasErrors('fechaInicio')}" th:errors="*{fechaInicio}"></label>
             <label>Fecha de culminación: </label>
-            <input style="margin-bottom: 10px" class="form-control" type="date" th:field="*{fechaFin}">
-            <div class="invalid-feedback row" th:if="${#fields.hasErrors('fechaFin')}" th:errors="*{fechaFin}"></div>
+            <input th:classappend="${#fields.hasErrors('fechaFin')?'is-invalid':''}" style="margin-bottom: 10px" class="form-control" type="datetime-local" th:field="*{fechaFin}">
+            <label class="invalid-feedback" th:if="${#fields.hasErrors('fechaFin')}" th:errors="*{fechaFin}"></label>
+            <label style="color: red" th:if="${errorStock!=null}" th:text="${errorStock}"></label>
+            <label style="color: red" th:if="${errorFecha!=null}" th:text="${errorFecha}"></label>
             <button class="btn btn-success" type="submit">Guardar</button>
-            <div class="invalid-feedback row" th:if="${errorStock!=null}" th:text="${errorStock}"></div>
-            <div class="invalid-feedback row" th:if="${errorFecha!=null}" th:text="${errorFecha}"></div>
             <a class="btn btn-danger" href="/prestamos">Cancelar</a>
         </div>
     </form>

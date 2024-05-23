@@ -2,6 +2,7 @@ package com.example.labnose.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -28,18 +29,20 @@ public class DispositivoPorUsuario implements Serializable {
     private Usuario alumno;
 
     @ManyToOne
-    @JoinColumn(name = "id_profesor", nullable = false)
+    @JoinColumn(name = "id_profesor")
     private Usuario profesor;
 
     @Column(name = "tipo", length = 45)
     private String tipo;
 
     @Size(max = 45)
+    @NotBlank(message = "El campo no puede estar vacío")
     @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "fecha_inicio", length = 45)
     private String fechaInicio;
 
     @Size(max = 45)
+    @NotBlank(message = "El campo no puede estar vacío")
     @NotNull(message = "El campo no puede estar vacío")
     @Column(name = "fecha_fin", length = 45)
     private String fechaFin;

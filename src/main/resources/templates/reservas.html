@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="navbar::head('Reservas')">
+</head>
+<body>
+<div th:replace="navbar.html::navbar('Reservas')"></div>
+<h1>Reservas</h1>
+<div>
+    <a sec:authorize="hasAnyAuthority('Alumno')" class="btn btn-info" href="/vistaAgregarReserva">Registrar reserva</a>
+</div>
+<div style="padding: 20px;width: 100%">
+    <table style="width: 100%;">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>Usuario</td>
+            <td>Dispositivo</td>
+            <td>Fecha de inicio</td>
+            <td>Fecha de fin</td>
+            <td>Acciones</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="reserva:${listaReservas}">
+            <td th:text="${reserva.id}"></td>
+            <td th:text="${reserva.alumno.nombre}"></td>
+            <td th:text="${reserva.dispositivo.nombre}"></td>
+            <td th:text="${reserva.fechaInicio}"></td>
+            <td th:text="${reserva.fechaFin}"></td>
+            <td sec:authorize="hasAnyAuthority('Alumno')">
+                <div class="row">
+                    <div class="col-6">
+                        <a th:href="@{|/devolverReserva?id=${reserva.id}|}">Devolver</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
